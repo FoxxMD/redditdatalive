@@ -4,8 +4,7 @@ import { CssBaseline, Grid } from '@material-ui/core';
 import { Route } from 'react-router-dom';
 
 import AppBar from './Components/AppBar';
-import Listen from './Pages/Listen';
-
+import routes from './routes';
 
 class App extends Component {
   constructor( props ){
@@ -20,7 +19,7 @@ class App extends Component {
 		  <AppBar/>
 		  <Grid container>
 			<Grid item>
-			  <Route exact path="/" title="Listen to Reddit" component={Listen}/>
+			  {routes.map((route, i) => <Route key={i} {...route}/>)}
 			</Grid>
 		  </Grid>
 		</Fragment>

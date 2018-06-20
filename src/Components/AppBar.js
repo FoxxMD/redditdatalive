@@ -4,8 +4,13 @@ import { withStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SettingsIcon from '@material-ui/icons/Settings';
+import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
+import { compose } from 'recompose';
+import { NavLink } from 'react-router-dom';
 
-const styles = {
+import routes from '../routes';
+
+const styles = theme => ({
   root: {
 	flexGrow: 1,
   },
@@ -16,10 +21,15 @@ const styles = {
 	marginLeft: -12,
 	marginRight: 20,
   },
-};
+  linkStyle: {
+	...theme.typography.title,
+	color: 'inherit',
+	textDecoration: 'none'
+  }
+});
 
 function ButtonAppBar( props ){
-  const { classes } = props;
+  const { classes, breadcrumbs } = props;
   return (
 	  <div className={classes.root}>
 		<AppBar position="static">
@@ -28,7 +38,14 @@ function ButtonAppBar( props ){
 			  <MenuIcon/>
 			</IconButton>
 			<Typography variant="title" color="inherit" className={classes.flex}>
-			  Listen To Reddit
+			  {breadcrumbs.map( ( breadcrumb, index ) => (
+				  <span key={breadcrumb.key}>
+					<NavLink className={classes.linkStyle} to={breadcrumb.props.match.url}>
+					  {breadcrumb}
+					</NavLink>
+					{(index < breadcrumbs.length - 1) && <i> / </i>}
+				  </span>
+			  ) )}
 			</Typography>
 			<IconButton disabled color="inherit">
 			  <SettingsIcon/>
@@ -43,4 +60,9 @@ ButtonAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles( styles )( ButtonAppBar );
+const composed = compose(
+	withStyles( styles ),
+	withBreadcrumbs( routes ),
+);
+
+export default composed( ButtonAppBar );
