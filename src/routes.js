@@ -6,7 +6,6 @@ const routes = [
 	exact: true,
 	breadcrumb: 'Listen To Reddit',
 	component: Listen,
-	
   }
 ];
 
