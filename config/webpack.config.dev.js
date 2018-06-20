@@ -144,7 +144,7 @@ module.exports = {
             include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
-              
+			  plugins: [ [ 'lodash', { id: [ 'material-ui' ] } ] ],
               // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/
               // directory for faster rebuilds.
@@ -188,6 +188,15 @@ module.exports = {
               },
             ],
           },
+		  // {
+		  // loader: require.resolve( 'babel-loader' ),
+		  // test: /\.js$/,
+		  // exclude: /node_modules/,
+		  // query: {
+		  //   plugins: [ 'material-ui' ],
+		  //   presets: [ [ '@babel/env', { 'targets': { 'node': 6 } } ] ]
+		  // }
+		  // },
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.
           // In production, they would get copied to the `build` folder.
