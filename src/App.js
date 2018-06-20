@@ -7,11 +7,6 @@ import AppBar from './Components/AppBar';
 import routes from './routes';
 
 class App extends Component {
-  constructor( props ){
-	super( props );
-	//this.props.startFeed();
-  }
-  
   render(){
 	return (
 		<Fragment>

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import createHistory from "history/createBrowserHistory";
 
@@ -15,7 +15,7 @@ import './index.css';
 import App from './App';
 import createReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
-import sseMiddleware from './sseMiddle';
+import sseMiddleware from './Global/SSE/sseMiddleware';
 
 const sagaMiddleware    = createSagaMiddleware();
 const history           = createHistory();

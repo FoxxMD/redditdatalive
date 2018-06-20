@@ -9,7 +9,7 @@ import {
   DAEMON,
   ONCE_TILL_UNMOUNT,
   RESTART_ON_REMOUNT,
-} from '../constants';
+} from './injectSagaConstants';
 
 const allowedModes = [RESTART_ON_REMOUNT, DAEMON, ONCE_TILL_UNMOUNT];
 

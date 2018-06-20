@@ -1,4 +1,4 @@
-import * as constants from '../Utils/SSE/constants';
+import * as constants from './sseConstants';
 
 const initialSseState = {
   starting: false,

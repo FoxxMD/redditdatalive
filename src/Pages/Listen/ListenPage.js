@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { Button } from '@material-ui/core';
 
-import * as feedActions from '../../Utils/SSE/actions';
+import * as feedActions from '../../Global/SSE/sseActions';
 import injectSaga from '../../Utils/injectSaga';
 import injectReducer from '../../Utils/injectReducer';
 import saga from './ListenSaga';
 import reducer from './ListenReducer';
-import { sseSelector } from '../../Utils/SSE/selectors';
+import { sseSelector } from '../../Global/SSE/sseSelectors';
 
 class ListenPage extends Component {
   
