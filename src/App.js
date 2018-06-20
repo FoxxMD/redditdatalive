@@ -1,25 +1,29 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import logo from './logo.svg';
-import './App.css';
+import { CssBaseline, Grid } from '@material-ui/core';
+import { Route } from 'react-router-dom';
+
+import AppBar from './Components/AppBar';
+import Listen from './Pages/Listen';
+
 
 class App extends Component {
   constructor( props ){
 	super( props );
-	this.props.startFeed();
+	//this.props.startFeed();
   }
   
   render(){
 	return (
-		<div className="App">
-		  <header className="App-header">
-			<img src={logo} className="App-logo" alt="logo"/>
-			<h1 className="App-title">Welcome to React</h1>
-		  </header>
-		  <p className="App-intro">
-			To get started, edit <code>src/App.js</code> and save to reload.
-		  </p>
-		</div>
+		<Fragment>
+		  <CssBaseline/>
+		  <AppBar/>
+		  <Grid container>
+			<Grid item>
+			  <Route exact path="/" title="Listen to Reddit" component={Listen}/>
+			</Grid>
+		  </Grid>
+		</Fragment>
 	);
   }
 }

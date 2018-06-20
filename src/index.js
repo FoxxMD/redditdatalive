@@ -7,25 +7,19 @@ import createHistory from "history/createBrowserHistory";
 
 import {
   ConnectedRouter,
-  routerReducer,
   routerMiddleware,
 } from "react-router-redux";
 
 
 import './index.css';
 import App from './App';
-import rootReducer from './reducers';
+import createReducer from './reducers';
 import registerServiceWorker from './registerServiceWorker';
 import sseMiddleware from './sseMiddle';
 
 const sagaMiddleware    = createSagaMiddleware();
 const history           = createHistory();
 const historyMiddleware = routerMiddleware( history );
-
-const combinedReducers = combineReducers( {
-  ...rootReducer,
-  router: routerReducer
-} );
 
 const middlewares = [
   historyMiddleware,
@@ -35,7 +29,11 @@ const middlewares = [
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore( combinedReducers, composeEnhancers( applyMiddleware( ...middlewares ) ) );
+const store = createStore( createReducer(), composeEnhancers( applyMiddleware( ...middlewares ) ) );
+
+store.runSaga          = sagaMiddleware.run;
+store.injectedReducers = {}; // Reducer registry
+store.injectedSagas    = {}; // Saga registry
 
 ReactDOM.render( <Provider store={store}>
   <ConnectedRouter history={history}>
