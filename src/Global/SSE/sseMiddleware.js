@@ -1,5 +1,5 @@
 import * as constants from './sseConstants';
-import { selectActivePref } from '../../Global/Preferences/preferencesSelector';
+import { selectActivePref, selectPreferenceByName } from '../../Global/Preferences/preferencesSelector';
 import URLSearchParams from 'url-search-params'; // polyfill
 import get from 'lodash/get';
 
@@ -14,8 +14,8 @@ const middleware = store => next => action =>{
 		window.redditSource.close();
 	  }
 	  
-	  const activePref = selectActivePref( store.getState() );
-	  let qs           = buildQSFromPreferences( activePref );
+	  const prefsToUse = action.payload.name === undefined ? selectActivePref( store.getState() ) : selectPreferenceByName(action.payload.name)(store.getState());
+	  let qs           = buildQSFromPreferences( prefsToUse );
 	  if(qs.length > 1) {
 		qs = `?${qs}`;
 	  }

@@ -6,9 +6,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SettingsIcon from '@material-ui/icons/Settings';
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 import { compose } from 'recompose';
+import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import routes from '../routes';
+import { selectActivePref } from '../Global/Preferences/preferencesSelector';
+import * as prefActions from '../Global/Preferences/preferencesActions';
 
 const styles = theme => ({
   root: {
@@ -60,9 +63,20 @@ ButtonAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
+const mapDispatchToProps = ( dispatch ) => ({
+  setPreferences: ( prefs ) => (dispatch( prefActions.setPreferences( prefs ) ))
+});
+
+const mapStateToProps = ( state ) =>{
+  return {
+	preferences: selectActivePref( state ),
+  };
+};
+
 const composed = compose(
 	withStyles( styles ),
 	withBreadcrumbs( routes ),
+	connect( mapStateToProps, mapDispatchToProps )
 );
 
 export default composed( ButtonAppBar );
