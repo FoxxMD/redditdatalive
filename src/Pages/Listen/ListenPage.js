@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import { Button } from '@material-ui/core';
 
 import pageHOC from '../PageHOC';
-import * as sseActions from '../../Global/SSE/sseActions';
 import { defaultPrefs } from '../../Global/Preferences/preferencesReducer';
-import { sseSelector } from '../../Global/SSE/sseSelectors';
 import injectSaga from '../../Utils/injectSaga';
 import injectReducer from '../../Utils/injectReducer';
 import saga from './ListenSaga';
@@ -16,30 +13,14 @@ const EXPERIMENT_KEY = 'listen';
 
 class Listen extends Component {
   
-  toggleFeed = () =>{
-	if(this.props.sse.status !== 2) {
-	  this.props.stopFeed();
-	}
-	else {
-	  this.props.startFeed();
-	}
-  };
-  
   render(){
-	return (<Button onClick={this.toggleFeed}>{this.props.sse.status === 2 ? 'Start It' : 'Stop It'}</Button>);
+	return 'Listen Page';
   }
 }
 
-const mapDispatchToProps = ( dispatch ) => ({
-  startFeed: () => (dispatch( sseActions.startFeed( EXPERIMENT_KEY ) )),
-  stopFeed: () => (dispatch( sseActions.stopFeed() )),
-});
+const mapDispatchToProps = ( dispatch ) => ({});
 
-const mapStateToProps = ( state ) =>{
-  return {
-	sse: sseSelector( state ),
-  };
-};
+const mapStateToProps = ( state ) =>({});
 
 const withReducer = injectReducer( { key: EXPERIMENT_KEY, reducer } );
 const withSaga    = injectSaga( { key: EXPERIMENT_KEY, saga } );
@@ -47,6 +28,7 @@ const withSaga    = injectSaga( { key: EXPERIMENT_KEY, saga } );
 const defaultPrefsData           = { ...defaultPrefs };
 defaultPrefsData.availableEvents = [ 'submissions' ];
 defaultPrefsData.activeEvents    = [ 'submissions' ];
+defaultPrefsData.autoStart       = false;
 
 const composed = compose(
 	withReducer,
