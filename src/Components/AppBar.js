@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, IconButton, Badge, CircularProgress } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, IconButton, Badge, CircularProgress, Popover } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SettingsIcon from '@material-ui/icons/Settings';
+import Favorite from '@material-ui/icons/Favorite';
 import WorldIcon from '@material-ui/icons/Language';
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 import { compose } from 'recompose';
@@ -34,7 +35,10 @@ const styles = theme => ({
 	...theme.typography.title,
 	color: 'inherit',
 	textDecoration: 'none'
-  }
+  },
+  popoverTypography: {
+	margin: theme.spacing.unit * 2,
+  },
 });
 
 const statusType = {
@@ -70,16 +74,27 @@ const progressStyles = theme => ({
   }
 });
 
-
 const StatusBadge    = withStyles( badgeStyles )( Badge );
 const StatusProgress = withStyles( progressStyles )( CircularProgress );
+
+const popOverProps = {
+  anchorOrigin: {
+	vertical: 'bottom',
+	horizontal: 'center'
+  },
+  transformOrigin: {
+	vertical: 'top',
+	horizontal: 'right'
+  }
+};
 
 class ButtonAppBar extends Component {
   
   constructor( props ){
 	super( props );
 	this.state = {
-	  prefDrawerOpen: false
+	  prefDrawerOpen: false,
+	  creditAnchorElement: null
 	};
   }
   
@@ -92,6 +107,18 @@ class ButtonAppBar extends Component {
   closePrefDrawer = () =>{
 	this.setState( {
 	  prefDrawerOpen: false
+	} );
+  };
+  
+  handlePopoverClick = ( event ) =>{
+	this.setState( {
+	  creditAnchorElement: event.currentTarget
+	} );
+  };
+  
+  handlePopoverClose = () =>{
+	this.setState( {
+	  creditAnchorElement: null
 	} );
   };
   
@@ -117,7 +144,7 @@ class ButtonAppBar extends Component {
   
   render(){
 	const { classes, breadcrumbs, sse } = this.props;
-	
+	const { creditAnchorElement }       = this.state;
 	return (
 		<div className={classes.root}>
 		  <AppBar position="static">
@@ -135,7 +162,7 @@ class ButtonAppBar extends Component {
 				  </span>
 				) )}
 			  </Typography>
-			  <IconButton onClick={this.toggleSse}>
+			  <IconButton color="inherit" onClick={this.toggleSse}>
 				<StatusBadge badgeContent=""
 							 color={sse.error !== null ? 'error' : get( statusType, [ sse.status ], 'secondary' )}>
 				  {this.props.sse.status === sseConstants.SSE_STATUS_CONNECTING && <StatusProgress size={24}/>}
@@ -145,6 +172,22 @@ class ButtonAppBar extends Component {
 			  <IconButton onClick={this.openPrefDrawer} color="inherit">
 				<SettingsIcon/>
 			  </IconButton>
+			  <IconButton onClick={this.handlePopoverClick} color="inherit">
+				<Favorite/>
+			  </IconButton>
+			  <Popover open={Boolean( creditAnchorElement )}
+					   anchorEl={creditAnchorElement}
+					   onClose={this.handlePopoverClose}
+					   {...popOverProps}>
+				<Typography className={classes.popoverTypography}>
+				  <Typography>
+					<p>Hey thanks for checking this out! You're great.</p>
+					<p>Site and experiment sources are available on Github, created by <a href="https://matthewfoxx.com">FoxxMD</a>.</p>
+					<p>Reddit live feed source available on <a href="https://github.com/pushshift/reddit_sse_stream">Github</a>,
+					  created and provided by <a href="https://pushshift.io/">pushshift.io</a>.</p>
+				  </Typography>
+				</Typography>
+			  </Popover>
 			</Toolbar>
 		  </AppBar>
 		  <PreferenceDrawer onSavePrefs={this.savePrefs} onOpen={this.openPrefDrawer} onClose={this.closePrefDrawer}
