@@ -30,16 +30,17 @@ const middleware = store => next => action =>{
 		store.dispatch( { type: constants.SSE_ERROR, payload: e } );
 	  };
 	  window.redditSource.addEventListener( 'rc', ( event ) =>{
-		store.dispatch( { type: constants.SSE_MESSAGE_COMMENT, payload: event } );
+		store.dispatch( { type: constants.SSE_MESSAGE_COMMENT, payload: JSON.parse(event.data) } );
 	  } );
 	  window.redditSource.addEventListener( 'rs', ( event ) =>{
-		store.dispatch( { type: constants.SSE_MESSAGE_SUBMISSION, payload: event } );
+	  
+		store.dispatch( { type: constants.SSE_MESSAGE_SUBMISSION, payload: JSON.parse(event.data) } );
 	  } );
 	  window.redditSource.addEventListener( 'rr', ( event ) =>{
-		store.dispatch( { type: constants.SSE_MESSAGE_SUBREDDIT, payload: event } );
+		store.dispatch( { type: constants.SSE_MESSAGE_SUBREDDIT, payload: JSON.parse(event.data) } );
 	  } );
 	  window.redditSource.addEventListener( 'keepalive', ( event ) =>{
-		store.dispatch( { type: constants.SSE_MESSAGE_KEEPALIVE, payload: event } );
+		store.dispatch( { type: constants.SSE_MESSAGE_KEEPALIVE, payload: JSON.parse(event.data) } );
 	  } );
 	  
 	  break;
