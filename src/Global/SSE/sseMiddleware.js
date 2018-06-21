@@ -7,9 +7,9 @@ const BASE_URL = 'http://stream.pushshift.io/';
 
 const middleware = store => next => action =>{
   switch(action.type) {
-	  // User request to connect
 	case constants.SSE_START:
 	  
+	  // close if the source is already open so we can restart with new options
 	  if(window.redditSource !== undefined && window.redditSource.readyState !== 2) {
 		window.redditSource.close();
 	  }
@@ -24,7 +24,6 @@ const middleware = store => next => action =>{
 	  // Configure the object
 	  window.redditSource = new EventSource( url );
 	  
-	  // Attach the callbacks
 	  window.redditSource.onopen  = () => store.dispatch( { type: constants.SSE_OPEN } );
 	  window.redditSource.onerror = ( e ) =>{
 		console.log( e );
@@ -32,12 +31,25 @@ const middleware = store => next => action =>{
 	  };
 	  window.redditSource.addEventListener( 'rc', ( event ) =>{
 		store.dispatch( { type: constants.SSE_MESSAGE_COMMENT, payload: event } );
-	  });
+	  } );
+	  window.redditSource.addEventListener( 'rs', ( event ) =>{
+		store.dispatch( { type: constants.SSE_MESSAGE_SUBMISSION, payload: event } );
+	  } );
+	  window.redditSource.addEventListener( 'rr', ( event ) =>{
+		store.dispatch( { type: constants.SSE_MESSAGE_SUBREDDIT, payload: event } );
+	  } );
+	  window.redditSource.addEventListener( 'keepalive', ( event ) =>{
+		store.dispatch( { type: constants.SSE_MESSAGE_KEEPALIVE, payload: event } );
+	  } );
 	  
 	  break;
 	
 	case constants.SSE_STOP:
-	  window.redditSource.close();
+	  
+	  if(window.redditSource !== undefined) {
+		window.redditSource.close();
+	  }
+
 	  store.dispatch( { type: constants.SSE_CLOSE } );
 	  break;
 	
