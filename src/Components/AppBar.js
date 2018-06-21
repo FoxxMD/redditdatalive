@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, IconButton, Badge } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, IconButton, Badge, CircularProgress } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SettingsIcon from '@material-ui/icons/Settings';
 import WorldIcon from '@material-ui/icons/Language';
@@ -38,7 +38,7 @@ const styles = theme => ({
 });
 
 const statusType = {
-  [ sseConstants.SSE_STATUS_CONNECTING ]: 'error',
+  [ sseConstants.SSE_STATUS_CONNECTING ]: 'secondary',
   [ sseConstants.SSE_STATUS_CLOSED ]: 'secondary',
   [ sseConstants.SSE_STATUS_OPEN ]: 'primary'
 };
@@ -51,7 +51,7 @@ const badgeStyles = theme => ({
 	backgroundColor: 'grey',
   },
   colorError: {
-	backgroundColor: 'orange'
+	backgroundColor: 'red'
   },
   badge: {
 	top: '-8px',
@@ -61,7 +61,18 @@ const badgeStyles = theme => ({
   }
 });
 
-const StatusBadge = withStyles( badgeStyles )( Badge );
+const progressStyles = theme => ({
+  colorPrimary: {
+	color: 'orange'
+  },
+  root: {
+	position: 'absolute'
+  }
+});
+
+
+const StatusBadge    = withStyles( badgeStyles )( Badge );
+const StatusProgress = withStyles( progressStyles )( CircularProgress );
 
 class ButtonAppBar extends Component {
   
@@ -125,7 +136,9 @@ class ButtonAppBar extends Component {
 				) )}
 			  </Typography>
 			  <IconButton onClick={this.toggleSse}>
-				<StatusBadge badgeContent={sse.error !== null ? '!' : ''} color={get( statusType, [ sse.status ], 'secondary' )}>
+				<StatusBadge badgeContent=""
+							 color={sse.error !== null ? 'error' : get( statusType, [ sse.status ], 'secondary' )}>
+				  {this.props.sse.status === sseConstants.SSE_STATUS_CONNECTING && <StatusProgress size={24}/>}
 				  <WorldIcon/>
 				</StatusBadge>
 			  </IconButton>
