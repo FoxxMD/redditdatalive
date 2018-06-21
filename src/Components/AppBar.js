@@ -9,6 +9,7 @@ import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import get from 'lodash/get';
 
 import routes from '../routes';
 import { selectActivePref } from '../Global/Preferences/preferencesSelector';
@@ -16,7 +17,7 @@ import { sseSelector } from '../Global/SSE/sseSelectors';
 import * as sseActions from '../Global/SSE/sseActions';
 import * as sseConstants from '../Global/SSE/sseConstants';
 import * as prefActions from '../Global/Preferences/preferencesActions';
-import get from 'lodash/get';
+import PreferenceDrawer from './PreferenceDrawer';
 
 const styles = theme => ({
   root: {
@@ -64,12 +65,42 @@ const StatusBadge = withStyles( badgeStyles )( Badge );
 
 class ButtonAppBar extends Component {
   
+  constructor( props ){
+	super( props );
+	this.state = {
+	  prefDrawerOpen: false
+	};
+  }
+  
+  openPrefDrawer = () =>{
+	this.setState( {
+	  prefDrawerOpen: true
+	} );
+  };
+  
+  closePrefDrawer = () =>{
+	this.setState( {
+	  prefDrawerOpen: false
+	} );
+  };
+  
   toggleSse = () =>{
 	if(this.props.sse.status === sseConstants.SSE_STATUS_CLOSED) {
 	  this.props.startFeed();
 	}
 	else if(this.props.sse.status === sseConstants.SSE_STATUS_OPEN) {
 	  this.props.stopFeed();
+	}
+  };
+  
+  savePrefs = ( prefs ) =>{
+	this.setState( {
+	  prefDrawerOpen: false
+	} );
+	this.props.setPreferences( prefs );
+	
+	if(this.props.sse.status === sseConstants.SSE_STATUS_OPEN) {
+	  this.props.startFeed();
 	}
   };
   
@@ -98,11 +129,14 @@ class ButtonAppBar extends Component {
 				  <WorldIcon/>
 				</StatusBadge>
 			  </IconButton>
-			  <IconButton disabled color="inherit">
+			  <IconButton onClick={this.openPrefDrawer} color="inherit">
 				<SettingsIcon/>
 			  </IconButton>
 			</Toolbar>
 		  </AppBar>
+		  <PreferenceDrawer onSavePrefs={this.savePrefs} onOpen={this.openPrefDrawer} onClose={this.closePrefDrawer}
+							preferences={this.props.preferences}
+							open={this.state.prefDrawerOpen}/>
 		</div>
 	);
   }

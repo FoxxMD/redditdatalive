@@ -8,8 +8,8 @@ export const defaultPrefs = {
   autoStart: true,
   availableEvents: [],
   activeEvents: [],
-  filterBySubreddits: [],
-  filterBySelf: false,
+  subreddits: [],
+  self: false,
   nsfw: false,
 }
 

@@ -53,9 +53,9 @@ function buildQSFromPreferences( prefs ){
   if(get( prefs, [ 'activeEvents' ], [] ).length > 0) {
 	params.append( 'type', prefs.activeEvents.join( ',' ) );
   }
-  params.append( 'is_self', get( prefs, [ 'filterBySelf' ], false ) );
+  params.append( 'is_self', get( prefs, [ 'self' ], false ) );
   params.append( 'over_18', get( prefs, [ 'nsfw' ], false ) );
-  if(get( prefs, [ 'filterBySubreddits' ], [] ).length > 0) {
+  if(get( prefs, [ 'subreddits' ], [] ).length > 0) {
 	params.append( 'subreddit', prefs.filterBySubreddits.join( ',' ) );
   }
   
