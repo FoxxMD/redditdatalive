@@ -1,6 +1,8 @@
 import * as constants from './preferencesConstants';
 
-const initialState = {};
+const initialState = {
+  activePref: null
+};
 
 export const defaultPrefs = {
   autoStart: true,
@@ -13,11 +15,13 @@ export const defaultPrefs = {
 
 const preferencesReducer = ( state = initialState, action ) =>{
   switch(action.type) {
-	case constants.INITIALIZE_PREFERENCE:
+	case constants.SET_PREFERENCE:
 	  if(state[ action.payload.name ] === undefined) {
 		return { ...state, [ action.payload.name ]: action.payload.defaultData };
 	  }
 	  return state;
+	case constants.SET_ACTIVE_PREFERENCE:
+	  return { ...state, activePref: action.payload };
 	default:
 	  return state;
   }

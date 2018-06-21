@@ -15,13 +15,14 @@ function connectedPageHOC( { key, defaultPrefsData = defaultPrefs } ){
 	  
 	  constructor( props ){
 		super( props );
+		props.setActivePref();
 		this.init( props );
 	  }
 	  
 	  init = ( props ) =>{
 		let usablePrefs = null;
-		if(props.preferences === undefined) {
-		  props.initPrefs( defaultPrefsData );
+		if(props.preferences == undefined) {
+		  props.setPrefs( defaultPrefsData );
 		  usablePrefs = defaultPrefsData;
 		}
 		else {
@@ -44,7 +45,8 @@ function connectedPageHOC( { key, defaultPrefsData = defaultPrefs } ){
 	Page.displayName = `ConnectPreferences(${getDisplayName( WrappedComponent )})`;
 	
 	const mapDispatchToProps = ( dispatch ) => ({
-	  initPrefs: ( data ) => (dispatch( prefActions.initializePreferences( key, data ) )),
+	  setPrefs: ( data ) => (dispatch( prefActions.setPreferences( key, data ) )),
+	  setActivePref: () => dispatch( prefActions.setActivePref( key ) ),
 	  init: () => (dispatch( sseActions.startFeed( key ) ))
 	});
 	

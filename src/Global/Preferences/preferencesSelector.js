@@ -1,7 +1,21 @@
 import { simpleSelect } from '../../Utils/selectorUtil';
+import { createSelector } from 'reselect';
 
-const selectPreferenceByName = ( name ) => simpleSelect( [ 'preferences', name ] );
+const REDUCER_NAME = 'preferences';
+
+const selectPreferenceByName = ( name ) => simpleSelect( [ REDUCER_NAME, name ] );
+const selectActivePrefName   = simpleSelect( [ REDUCER_NAME, 'activePref' ] );
+const selectPreferences      = simpleSelect( [ REDUCER_NAME ] );
+
+const selectActivePref = createSelector(
+	selectActivePrefName,
+	selectPreferences,
+	( name, prefs ) => prefs[ name ]
+);
 
 export {
-  selectPreferenceByName
+  selectPreferenceByName,
+  selectActivePrefName,
+  selectActivePref,
+  selectPreferences
 };
