@@ -13,7 +13,7 @@ class App extends Component {
 		  <CssBaseline/>
 		  <AppBar/>
 		  <Grid container>
-			<Grid item>
+			<Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
 			  {routes.map((route, i) => <Route key={i} {...route}/>)}
 			</Grid>
 		  </Grid>
