@@ -10,8 +10,8 @@ export const defaultPrefs = {
   availableEvents: [],
   activeEvents: [],
   subreddits: [],
-  self: false,
-  nsfw: false,
+  self: null,
+  nsfw: null,
 }
 
 const preferencesReducer = ( state = initialState, action ) =>{

@@ -14,6 +14,9 @@ import {
 } from '@material-ui/core';
 import { createSelector } from 'reselect';
 import isEqual from 'lodash/isEqual';
+import get from 'lodash/get';
+
+import { stringToValue, valueToString } from '../Utils/DataUtil';
 
 const ITEM_HEIGHT      = 48;
 const ITEM_PADDING_TOP = 8;
@@ -31,7 +34,8 @@ class PreferenceDrawer extends Component {
 	super( props );
 	this.state = {
 	  availableEvents: [],
-	  subreddits: []
+	  subreddits: [],
+	  ...props.preferences,
 	};
 	
 	this.arePrefsModified = createSelector(
@@ -54,6 +58,10 @@ class PreferenceDrawer extends Component {
 	this.props.onSavePrefs( this.state );
   };
   
+  revertPrefs = () =>{
+	this.setState( this.props.preferences );
+  };
+  
   render(){
 	const { preferences } = this.props;
 	const passedProps     = { ...this.props };
@@ -66,7 +74,7 @@ class PreferenceDrawer extends Component {
 			<ListItemText primary="Event Types"/>
 			<Select
 				multiple
-				value={this.state.activeEvents}
+				value={get( this.state, [ 'activeEvents' ], [] )}
 				onChange={( e ) => this.updatePrefValue( 'activeEvents', e.target.value )}
 				input={<Input id="select-multiple"/>}
 				MenuProps={MenuProps}
@@ -86,7 +94,7 @@ class PreferenceDrawer extends Component {
 			<Select
 				multiple
 				disabled
-				value={this.state.subreddits}
+				value={get( this.state, [ 'subreddits' ], [] )}
 				onChange={( e ) => this.updatePrefValue( 'subreddits', e.target.value )}
 				input={<Input id="select-multiple"/>}
 				MenuProps={MenuProps}
@@ -102,25 +110,47 @@ class PreferenceDrawer extends Component {
 			</Select>
 		  </ListItem>
 		  <ListItem>
-			<ListItemText primary="NSFW"/>
+			<ListItemText primary="Show NSFW?"/>
 			<ListItemSecondaryAction>
-			  <Switch
-				  disabled={preferences.nsfw === undefined}
-				  checked={this.state.nsfw || preferences.nsfw || false}
-				  onChange={( e ) => this.updatePrefValue( 'nsfw', e.target.checked )}
-				  value="nsfw"
-			  />
+			  <Select
+				  value={valueToString( get( this.state, [ 'nsfw' ] ) )}
+				  onChange={( e ) =>{
+					this.updatePrefValue( 'nsfw', stringToValue( e.target.value ) );
+				  }}
+				  input={<Input/>}
+				  MenuProps={MenuProps}
+			  >
+				<MenuItem key="off" value="null">Whatever</MenuItem>
+				<MenuItem key="yes" value="true">Yes</MenuItem>
+				<MenuItem key="no" value="false">No</MenuItem>
+			  </Select>
 			</ListItemSecondaryAction>
 		  </ListItem>
 		  <ListItem>
-			<ListItemText primary="Only Self Posts"/>
+			<ListItemText primary="Only Self Posts?"/>
 			<ListItemSecondaryAction>
-			  <Switch
-				  disabled={preferences.self === undefined}
-				  checked={this.state.self || preferences.self || false}
-				  onChange={( e ) => this.updatePrefValue( 'self', e.target.checked )}
-				  value="self"
-			  />
+			  <Select
+				  value={valueToString( get( this.state, [ 'self' ] ) )}
+				  onChange={( e ) =>{
+					this.updatePrefValue( 'self', stringToValue( e.target.value ) );
+				  }}
+				  input={<Input/>}
+				  MenuProps={MenuProps}
+			  >
+				<MenuItem key="off" value="null">Whatever</MenuItem>
+				<MenuItem key="yes" value="true">Yes</MenuItem>
+				<MenuItem key="no" value="false">No</MenuItem>
+			  </Select>
+			</ListItemSecondaryAction>
+		  </ListItem>
+		  <ListItem>
+			<ListItemText primary="Submission Backfill"/>
+			<ListItemSecondaryAction>
+			  <Input style={{ width: '70px' }}
+					 type="number"
+					 value={get( this.state, [ 'subBackfill' ], 0 )}
+					 disabled={this.state.subBackfill === undefined}
+					 onChange={( e ) => this.updatePrefValue( 'subBackfill', e.target.value )}/>
 			</ListItemSecondaryAction>
 		  </ListItem>
 		  <ListItem>
@@ -137,6 +167,8 @@ class PreferenceDrawer extends Component {
 		  <ListItem>
 			<Button onClick={this.submitPrefs} fullWidth variant="contained" color="primary"
 					disabled={this.arePrefsModified( this.state )}>Save</Button>
+			<Button onClick={this.revertPrefs} fullWidth variant="outlined" color="secondary"
+					disabled={this.arePrefsModified( this.state )}>Revert</Button>
 		  </ListItem>
 		</List>
 	  </div>

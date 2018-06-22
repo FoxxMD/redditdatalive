@@ -33,8 +33,7 @@ const middleware = store => next => action =>{
 		store.dispatch( { type: constants.SSE_MESSAGE_COMMENT, payload: JSON.parse(event.data) } );
 	  } );
 	  window.redditSource.addEventListener( 'rs', ( event ) =>{
-	  
-		store.dispatch( { type: constants.SSE_MESSAGE_SUBMISSION, payload: JSON.parse(event.data) } );
+		store.dispatch( { type: constants.SSE_MESSAGE_SUBMISSION, payload: JSON.parse( event.data ) } );
 	  } );
 	  window.redditSource.addEventListener( 'rr', ( event ) =>{
 		store.dispatch( { type: constants.SSE_MESSAGE_SUBREDDIT, payload: JSON.parse(event.data) } );
@@ -63,13 +62,29 @@ const middleware = store => next => action =>{
 
 function buildQSFromPreferences( prefs ){
   const params = new URLSearchParams();
-  if(get( prefs, [ 'activeEvents' ], [] ).length > 0) {
-	params.append( 'type', prefs.activeEvents.join( ',' ) );
+  
+  const activeEvents = get( prefs, [ 'activeEvents' ], [] );
+  if(activeEvents.length > 0) {
+	params.append( 'type', activeEvents.join( ',' ) );
   }
-  params.append( 'is_self', get( prefs, [ 'self' ], false ) );
-  params.append( 'over_18', get( prefs, [ 'nsfw' ], false ) );
-  if(get( prefs, [ 'subreddits' ], [] ).length > 0) {
-	params.append( 'subreddit', prefs.filterBySubreddits.join( ',' ) );
+  const subBackfill = get( prefs, [ 'subBackfill' ] );
+  if(subBackfill !== undefined && subBackfill !== null && subBackfill > 0) {
+	params.append( 'submission_backfill', subBackfill );
+  }
+  
+  const self = get( prefs, [ 'self' ], null );
+  if(self !== null) {
+	params.append( 'is_self', self );
+  }
+  
+  const nsfw = get( prefs, [ 'nsfw' ], null );
+  if(nsfw !== null) {
+	params.append( 'over_18', nsfw );
+  }
+  
+  const subreddits = get( prefs, [ 'subreddits' ], [] );
+  if(subreddits.length > 0) {
+	params.append( 'subreddit', subreddits.join( ',' ) );
   }
   
   return params.toString();
