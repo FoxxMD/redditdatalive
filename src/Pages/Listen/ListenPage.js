@@ -139,6 +139,7 @@ defaultPrefsData.availableEvents = [ 'submissions' ];
 defaultPrefsData.activeEvents    = [ 'submissions' ];
 defaultPrefsData.subBackfill     = 500;
 defaultPrefsData.autoStart       = false;
+defaultPrefsData.nsfw            = false;
 
 const composed = compose(
 	withReducer,
