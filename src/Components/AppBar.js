@@ -145,6 +145,7 @@ class ButtonAppBar extends Component {
 	this.props.setPreferences( prefs );
 	
 	if(this.props.sse.status === sseConstants.SSE_STATUS_OPEN) {
+	  this.props.stopFeed();
 	  this.props.startFeed();
 	}
   };
