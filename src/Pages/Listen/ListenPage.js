@@ -88,7 +88,7 @@ class Listen extends Component {
 	  height: window.innerHeight - (this.props.appBarHeight !== null ? this.props.appBarHeight : 0)
 	}}>
 	  <div style={{height: '100%', position: 'relative'}}>
-	  <Button style={{ zIndex: '999' }} onClick={this.props.testSubmission}>Submission</Button>
+	  {/*<Button style={{ zIndex: '999' }} onClick={this.props.testSubmission}>Submission</Button>*/}
 	  <div style={submissionContainerStyle}>
 		<TransitionGroup component={null}>
 		  {this.props.submissions.map( ( item, index ) =>{
