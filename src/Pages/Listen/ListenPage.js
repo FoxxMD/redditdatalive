@@ -98,7 +98,7 @@ class Listen extends Component {
 	  <div style={submissionContainerStyle}>
 		<TransitionGroup component={null}>
 		  {this.props.submissions.map( ( item, index ) =>{
-			const displayTitle = item.title.length < 200 ? item.title : `${item.title.length.substr( 0, 200 )}...`;
+			const displayTitle = item.title.length < 200 ? item.title : `${item.title.substr( 0, 200 )}...`;
 			return (
 			  <Transition addEndListener={endListener}
 						  unmountOnExit
