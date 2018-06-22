@@ -1,7 +1,8 @@
 import * as constants from './preferencesConstants';
 
 const initialState = {
-  activePref: null
+  activePref: null,
+  appBarHeight: null,
 };
 
 export const defaultPrefs = {
@@ -25,6 +26,8 @@ const preferencesReducer = ( state = initialState, action ) =>{
 	  throw new Error( 'No preference name given and no active pref, cannot set preference data' );
 	case constants.SET_ACTIVE_PREFERENCE:
 	  return { ...state, activePref: action.payload };
+	case constants.ANNOUNCE_APPBAR_HEIGHT:
+	  return { ...state, appBarHeight: action.payload };
 	default:
 	  return state;
   }

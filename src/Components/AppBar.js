@@ -11,9 +11,10 @@ import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import get from 'lodash/get';
+import { withSize } from 'react-sizeme';
 
 import routes from '../routes';
-import { selectActivePref } from '../Global/Preferences/preferencesSelector';
+import { selectActivePref, selectAppBarHeight } from '../Global/Preferences/preferencesSelector';
 import { sseSelector } from '../Global/SSE/sseSelectors';
 import * as sseActions from '../Global/SSE/sseActions';
 import * as sseConstants from '../Global/SSE/sseConstants';
@@ -96,6 +97,12 @@ class ButtonAppBar extends Component {
 	  prefDrawerOpen: false,
 	  creditAnchorElement: null
 	};
+  }
+  
+  componentDidUpdate( prevProps ){
+	if(prevProps.size.height !== this.props.size.height) {
+	  this.props.announceAppBarHeight( this.props.size.height );
+	}
   }
   
   openPrefDrawer = () =>{
@@ -204,6 +211,7 @@ ButtonAppBar.propTypes = {
 
 const mapDispatchToProps = ( dispatch ) => ({
   setPreferences: ( prefs ) => (dispatch( prefActions.setPreferences( prefs ) )),
+  announceAppBarHeight: ( height ) => (dispatch( prefActions.annouceAppBarHeight( height ) )),
   startFeed: () => (dispatch( sseActions.startFeed() )),
   stopFeed: () => (dispatch( sseActions.stopFeed() ))
 });
@@ -211,14 +219,18 @@ const mapDispatchToProps = ( dispatch ) => ({
 const mapStateToProps = ( state ) =>{
   return {
 	preferences: selectActivePref( state ),
+	height: selectAppBarHeight( state ),
 	sse: sseSelector( state ),
   };
 };
 
+const withSizeHOC = withSize( { monitorHeight: true, refreshRate: 100 } );
+
 const composed = compose(
 	withStyles( styles ),
 	withBreadcrumbs( routes ),
-	connect( mapStateToProps, mapDispatchToProps )
+	connect( mapStateToProps, mapDispatchToProps ),
+	withSizeHOC,
 );
 
 export default composed( ButtonAppBar );

@@ -7,3 +7,7 @@ export function setPreferences( data = {}, name = undefined ){
 export function setActivePref( name ){
   return { type: constants.SET_ACTIVE_PREFERENCE, payload: name };
 }
+
+export function annouceAppBarHeight( height ){
+  return { type: constants.ANNOUNCE_APPBAR_HEIGHT, payload: height };
+}

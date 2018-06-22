@@ -6,6 +6,7 @@ const REDUCER_NAME = 'preferences';
 const selectPreferenceByName = ( name ) => simpleSelect( [ REDUCER_NAME, name ] );
 const selectActivePrefName   = simpleSelect( [ REDUCER_NAME, 'activePref' ] );
 const selectPreferences      = simpleSelect( [ REDUCER_NAME ] );
+const selectAppBarHeight     = simpleSelect( [ REDUCER_NAME, 'appBarHeight' ] );
 
 const selectActivePref = createSelector(
 	selectActivePrefName,
@@ -17,5 +18,6 @@ export {
   selectPreferenceByName,
   selectActivePrefName,
   selectActivePref,
-  selectPreferences
+  selectPreferences,
+  selectAppBarHeight,
 };
