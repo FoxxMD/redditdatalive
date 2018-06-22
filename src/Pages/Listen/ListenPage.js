@@ -32,12 +32,6 @@ const submissionContainerStyle = {
   overflow: 'visible',
 };
 
-const submissionStyle = {
-  width: '200px',
-  position: 'absolute',
-  overflowWrap: 'normal'
-}
-
 // super lots of help from https://github.com/aholachek/react-animation-comparison/blob/master/src/react-transition-group-anime-example.js
 // for how to use transitions properly
 const ANIMATION_DONE_EVENT      = "animation::done";
@@ -106,7 +100,7 @@ class Listen extends Component {
 						  onExit={animateExit}
 						  onEntered={() => this.props.removeItem( item.id )}
 						  key={item.id}>
-				<div style={submissionStyle}
+				<div className="BubbleContainer"
 					 onMouseEnter={this.onMouseEnter}
 					 onMouseLeave={this.onMouseLeave}>
 				  <div className="Bubble">
