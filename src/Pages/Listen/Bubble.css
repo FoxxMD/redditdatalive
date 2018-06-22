@@ -1,0 +1,24 @@
+.Bubble {
+	border-radius: .4em;
+	background-color: rgba(0,40,132, 0.6);
+	//border: 1px solid #002884;
+	color: white;
+	padding:10px 10px;
+	text-align: center;
+	font-size: 12px;
+}
+
+.Bubble:after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	width: 0;
+	height: 0;
+	border: 24px solid transparent;
+	border-top-color: rgba(0,40,132, 0.6);
+	border-bottom: 0;
+	border-left: 0;
+	margin-left: -12px;
+	margin-bottom: -24px;
+}

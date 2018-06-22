@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { Button } from '@material-ui/core';
+import { Transition, TransitionGroup } from 'react-transition-group';
 import ReactAnimationFrame from 'react-animation-frame';
 
 import pageHOC from '../PageHOC';
 import { defaultPrefs } from '../../Global/Preferences/preferencesReducer';
+import { selectAppBarHeight } from '../../Global/Preferences/preferencesSelector';
 import injectSaga from '../../Utils/injectSaga';
 import injectReducer from '../../Utils/injectReducer';
 import saga from './ListenSaga';
@@ -15,7 +17,9 @@ import { selectSubmissions } from './ListenSelectors';
 import * as listenActions from './ListenAction';
 import Floatable from './Floatable';
 
-import { Transition, TransitionGroup } from 'react-transition-group';
+// thanks https://leaverou.github.io/bubbly/
+import './Bubble.css';
+
 
 const EXPERIMENT_KEY = 'listen';
 
@@ -23,8 +27,16 @@ const submissionContainerStyle = {
   position: 'absolute',
   top: 0,
   left: 0,
+  bottom: 0,
+  right: 0,
   overflow: 'visible',
 };
+
+const submissionStyle = {
+  width: '200px',
+  position: 'absolute',
+  overflowWrap: 'normal'
+}
 
 // super lots of help from https://github.com/aholachek/react-animation-comparison/blob/master/src/react-transition-group-anime-example.js
 // for how to use transitions properly
@@ -65,8 +77,14 @@ class Listen extends Component {
   };
   
   render(){
-	return (<div style={{ overflow: 'visible' }}>
-	  <Button onClick={this.props.testSubmission}>Submission</Button>
+	return (<div style={{
+	  overflow: 'hidden',
+	  position: 'absolute',
+	  width: '100%',
+	  height: window.innerHeight - (this.props.appBarHeight !== null ? this.props.appBarHeight : 0)
+	}}>
+	  <div style={{height: '100%', position: 'relative'}}>
+	  <Button style={{ zIndex: '999' }} onClick={this.props.testSubmission}>Submission</Button>
 	  <div style={submissionContainerStyle}>
 		<TransitionGroup component={null}>
 		  {this.props.submissions.map( ( item, index ) => (
@@ -76,10 +94,13 @@ class Listen extends Component {
 						  onExit={animateExit}
 						  onEntered={() => this.props.removeItem( item.id )}
 						  key={item.id}>
-				<div>{item.id} - {item.title}</div>
+				<div style={submissionStyle}>
+				  <div className="Bubble"><h2>{item.title}</h2><p>{item.id}</p></div>
+				</div>
 			  </Transition>
 		  ) )}
 		</TransitionGroup>
+	  </div>
 	  </div>
 	</div>);
   }
@@ -91,7 +112,8 @@ const mapDispatchToProps = ( dispatch ) => ({
 });
 
 const mapStateToProps = ( state ) => ({
-  submissions: selectSubmissions( state )
+  submissions: selectSubmissions( state ),
+  appBarHeight: selectAppBarHeight( state ),
 });
 
 const withReducer = injectReducer( { key: EXPERIMENT_KEY, reducer } );
