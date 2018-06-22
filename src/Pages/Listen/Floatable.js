@@ -13,11 +13,17 @@ class Floatable {
 	
 	this.node       = node;
 	this.onComplete = onComplete;
+	this.active     = true;
   }
   
   update = ( deltaTime ) => {
+    
+    if(!this.active) {
+      return;
+	}
+	
 	var HVEL_MAX = 1;
-	var step     = deltaTime / 15; // moderates Y speed of floater. Lower is faster
+	var step     = deltaTime / 30; // moderates Y speed of floater. Lower is faster
 	
 	this.x += this.velocity.x * step;
 	this.y += this.velocity.y * step;
@@ -43,9 +49,17 @@ class Floatable {
 	}
   };
   
+  stopAnimation  = () =>{
+	this.active = false;
+  };
+  startAnimation = () =>{
+	this.active = true;
+  };
+  
   updateDiv = () =>{
-	this.node.style[ "-webkit-transform" ] = "translate(" + this.x + "px," + this.y + "px)";
-	this.node.style.transform              = "translate(" + this.x + "px," + this.y + "px)";
+	const translateString                  = `translate(${this.x}px, ${this.y}px)`;
+	this.node.style[ "-webkit-transform" ] = translateString;
+	this.node.style.transform              = translateString;
   };
 }
 

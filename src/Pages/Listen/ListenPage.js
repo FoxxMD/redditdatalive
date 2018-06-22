@@ -76,6 +76,16 @@ class Listen extends Component {
 	}
   };
   
+  onMouseEnter = ( e ) =>{
+	const foundNode = floaters.find( x => x.node === e.currentTarget );
+	foundNode.stopAnimation();
+  };
+  
+  onMouseLeave = ( e ) =>{
+	const foundNode = floaters.find( x => x.node === e.currentTarget );
+	foundNode.startAnimation();
+  };
+  
   render(){
 	return (<div style={{
 	  overflow: 'hidden',
@@ -87,18 +97,29 @@ class Listen extends Component {
 	  <Button style={{ zIndex: '999' }} onClick={this.props.testSubmission}>Submission</Button>
 	  <div style={submissionContainerStyle}>
 		<TransitionGroup component={null}>
-		  {this.props.submissions.map( ( item, index ) => (
+		  {this.props.submissions.map( ( item, index ) =>{
+			const displayTitle = item.title.length < 200 ? item.title : `${item.title.length.substr( 0, 200 )}...`;
+			return (
 			  <Transition addEndListener={endListener}
 						  unmountOnExit
 						  onEnter={animateIn}
 						  onExit={animateExit}
 						  onEntered={() => this.props.removeItem( item.id )}
 						  key={item.id}>
-				<div style={submissionStyle}>
-				  <div className="Bubble"><h2>{item.title}</h2><p>{item.id}</p></div>
+				<div style={submissionStyle}
+					 onMouseEnter={this.onMouseEnter}
+					 onMouseLeave={this.onMouseLeave}>
+				  <div className="Bubble">
+					<h3 alt={item.title.length}><a className="titleLink" target="_blank" href={item.url}>{displayTitle}</a></h3>
+					<p>
+					  By <a href={`https://reddit.com/u/${item.author}`} target="_blank">/u/{item.author}</a> on
+					  <a href={`https://reddit.com/r/${item.subreddit}`} target="_blank">/r/{item.subreddit}</a>
+					</p>
+				  </div>
 				</div>
 			  </Transition>
-		  ) )}
+			);
+		  } )}
 		</TransitionGroup>
 	  </div>
 	  </div>

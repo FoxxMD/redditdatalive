@@ -6,6 +6,28 @@
 	padding:10px 10px;
 	text-align: center;
 	font-size: 12px;
+	position: relative;
+}
+
+.Bubble:hover {
+	border: 1px solid #002884;
+	background-color: rgb(0, 41, 151);
+}
+
+.Bubble a {
+	color: white;
+}
+
+.Bubble a.titleLink {
+	text-decoration: none;
+}
+
+.Bubble a.titleLink:hover {
+	text-decoration: underline;
+}
+
+.Bubble p {
+	font-size: 10px;
 }
 
 .Bubble:after {
@@ -21,4 +43,8 @@
 	border-left: 0;
 	margin-left: -12px;
 	margin-bottom: -24px;
+}
+
+.Bubble:hover:after {
+	border-top-color: rgba(0, 40, 132, 1);
 }
