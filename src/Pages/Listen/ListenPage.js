@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { Button } from '@material-ui/core';
-import anime from 'animejs';
+import ReactAnimationFrame from 'react-animation-frame';
 
 import pageHOC from '../PageHOC';
 import { defaultPrefs } from '../../Global/Preferences/preferencesReducer';
@@ -13,11 +13,21 @@ import reducer from './ListenReducer';
 import { createSubmissionEvent } from '../../Global/SSE/sseActions';
 import { selectSubmissions } from './ListenSelectors';
 import * as listenActions from './ListenAction';
+import Floatable from './Floatable';
 
 import { Transition, TransitionGroup } from 'react-transition-group';
 
 const EXPERIMENT_KEY = 'listen';
 
+const submissionContainerStyle = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  overflow: 'visible',
+};
+
+// super lots of help from https://github.com/aholachek/react-animation-comparison/blob/master/src/react-transition-group-anime-example.js
+// for how to use transitions properly
 const ANIMATION_DONE_EVENT      = "animation::done";
 const triggerAnimationDoneEvent = node =>{
   node.dispatchEvent( new Event( ANIMATION_DONE_EVENT ) );
@@ -26,30 +36,38 @@ const endListener               = ( node, done ) =>{
   node.addEventListener( ANIMATION_DONE_EVENT, done );
 };
 
-// super lots of help from https://github.com/aholachek/react-animation-comparison/blob/master/src/react-transition-group-anime-example.js
-const getOpacity = animatingIn => ({
-  value: animatingIn ? [ 0, 1 ] : [ 1, 0 ],
-  easing: "linear",
-  duration: 300
-});
+const floatCleanup = ( floater ) =>{
+  const index = floaters.indexOf( floater );
+  floaters.splice( index, 1 );
+  setTimeout( () => triggerAnimationDoneEvent( floater.node ), 0 );
+};
 
-const animateIn = node =>
-	anime( {
-	  targets: node,
-	  opacity: getOpacity( true ),
-	  translateY: [ 50, 0 ],
-	  complete: () => triggerAnimationDoneEvent( node ),
-	  duration: 1500
-	} );
+let floaters = [];
+
+const animateIn = node =>{
+  const floater = new Floatable( node, floatCleanup );
+  floaters.push( floater );
+};
 
 const animateExit = node => setTimeout(() => triggerAnimationDoneEvent( node ), 0)
 
+let delta       = null;
+let last_update = 0;
+
 class Listen extends Component {
   
+  onAnimationFrame = ( time ) =>{
+	delta       = time - last_update;
+	last_update = time;
+	for(const floater of floaters) {
+	  floater.update( delta );
+	}
+  };
+  
   render(){
-	return (<div>
+	return (<div style={{ overflow: 'visible' }}>
 	  <Button onClick={this.props.testSubmission}>Submission</Button>
-	  <ul>
+	  <div style={submissionContainerStyle}>
 		<TransitionGroup component={null}>
 		  {this.props.submissions.map( ( item, index ) => (
 			  <Transition addEndListener={endListener}
@@ -58,11 +76,11 @@ class Listen extends Component {
 						  onExit={animateExit}
 						  onEntered={() => this.props.removeItem( item.id )}
 						  key={item.id}>
-				<li>{item.id} - {item.title}</li>
+				<div>{item.id} - {item.title}</div>
 			  </Transition>
 		  ) )}
 		</TransitionGroup>
-	  </ul>
+	  </div>
 	</div>);
   }
 }
@@ -88,7 +106,8 @@ const composed = compose(
 	withReducer,
 	withSaga,
 	pageHOC( { key: EXPERIMENT_KEY, defaultPrefsData } ),
-	connect( mapStateToProps, mapDispatchToProps )
+	connect( mapStateToProps, mapDispatchToProps ),
+	ReactAnimationFrame,
 );
 
 export default composed( Listen );
