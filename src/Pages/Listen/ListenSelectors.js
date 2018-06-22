@@ -1,5 +1,6 @@
 import { simpleSelect } from '../../Utils/selectorUtil';
 
-const selectSubmissions = simpleSelect( [ 'listen', 'submissions' ] );
+const selectSubmissions    = simpleSelect( [ 'listen', 'activeSubmissions' ] );
+const selectRawSubmissions = simpleSelect( [ 'listen', 'rawSubmissions' ] );
 
-export { selectSubmissions };
+export { selectSubmissions, selectRawSubmissions };

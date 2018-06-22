@@ -143,6 +143,7 @@ const withSaga    = injectSaga( { key: EXPERIMENT_KEY, saga } );
 const defaultPrefsData           = { ...defaultPrefs };
 defaultPrefsData.availableEvents = [ 'submissions' ];
 defaultPrefsData.activeEvents    = [ 'submissions' ];
+defaultPrefsData.subBackfill     = 500;
 defaultPrefsData.autoStart       = false;
 
 const composed = compose(
