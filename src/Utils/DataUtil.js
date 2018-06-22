@@ -19,3 +19,7 @@ export function valueToString( val ){ // helper for selects that need a string/a
 	  return val.toString();
   }
 }
+
+export function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
