@@ -1,6 +1,7 @@
 {
   "name": "redditlisten",
   "version": "0.1.0",
+  "homepage": "https://foxxmd.github.io/redditdatalive",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.2.2",
@@ -28,6 +29,7 @@
     "extract-text-webpack-plugin": "3.0.2",
     "file-loader": "1.1.5",
     "fs-extra": "3.0.1",
+    "gh-pages": "^1.2.0",
     "history": "^4.7.2",
     "hoist-non-react-statics": "^2.5.5",
     "html-webpack-plugin": "2.29.0",
@@ -66,6 +68,8 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
+    "predeploy": "node scripts/build.js",
+    "deploy": "gh-pages -d build",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
