@@ -1,7 +1,7 @@
 {
   "name": "redditlisten",
   "version": "0.1.0",
-  "homepage": "https://foxxmd.github.io/redditdatalive",
+  "homepage": "redditdata.live",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.2.2",
