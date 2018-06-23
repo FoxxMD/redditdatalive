@@ -1,7 +1,7 @@
 {
   "name": "redditlisten",
   "version": "0.1.0",
-  "homepage": "redditdata.live",
+  "homepage": "http://redditdata.live/",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.2.2",
@@ -69,7 +69,7 @@
   },
   "scripts": {
     "predeploy": "node scripts/build.js",
-    "deploy": "gh-pages -d build",
+    "deploy": "cp ./CNAME build/ && gh-pages -d build",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
