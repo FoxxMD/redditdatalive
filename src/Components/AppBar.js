@@ -190,9 +190,18 @@ class ButtonAppBar extends Component {
 				<Typography className={classes.popoverTypography}>
 				  <Typography>
 					<p>Hey thanks for checking this out! You're great.</p>
-					<p>Site and experiment sources are available on Github, created by <a href="https://matthewfoxx.com">FoxxMD</a>.</p>
-					<p>Reddit live feed source available on <a href="https://github.com/pushshift/reddit_sse_stream">Github</a>,
+					<p>Site/experiments source code is available on <a href="https://github.com/FoxxMD/redditdatalive">Github</a>, created
+					  by <a href="https://matthewfoxx.com">Matt Foxx</a>.</p>
+					<p>Reddit live feed source code is also available on <a href="https://github.com/pushshift/reddit_sse_stream">Github</a>,
 					  created and provided by <a href="https://pushshift.io/">pushshift.io</a>.</p>
+					<p>If you have an idea for the site, feedback, or just want to say hi you can:</p>
+					<ul>
+					  <li>Create an issue on <a href="https://github.com/FoxxMD/redditdatalive/issues">Github</a></li>
+					  <li>PM me on <a href="https://www.reddit.com/user/foxxmd">Reddit</a></li>
+					  <li><span style={{ display: 'inline' }}>shoot me an email at</span>
+						<pre style={{ display: 'inline', marginLeft: '5px', fontSize: '1rem' }}>contact at matthewfoxx.com</pre>
+					  </li>
+					</ul>
 				  </Typography>
 				</Typography>
 			  </Popover>
