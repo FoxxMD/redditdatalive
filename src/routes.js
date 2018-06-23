@@ -4,7 +4,7 @@ const routes = [
   {
     path: '/',
 	exact: true,
-	breadcrumb: 'Listen To Reddit',
+	breadcrumb: 'Stream of Reddit',
 	component: Listen,
   }
 ];
