@@ -1,18 +1,23 @@
+.BubbleContainer {
+	width: 210px;
+	position: absolute;
+	overflowWrap: normal;
+	cursor: grab;
+}
+
 .Bubble {
 	border-radius: .4em;
 	background-color: rgba(0,40,132, 0.6);
 	//border: 1px solid #002884;
 	color: white;
-	padding:10px 10px;
+	padding: 20px 10px 10px 10px;
 	text-align: center;
 	font-size: 12px;
 	position: relative;
 }
 
-.Bubble:hover {
-	border: 1px solid #002884;
-	background-color: rgb(0, 41, 151);
-	z-index:9999;
+.PinIcon {
+	visibility: hidden;
 }
 
 .Bubble a {
@@ -39,24 +44,27 @@
 	width: 0;
 	height: 0;
 	border: 24px solid transparent;
-	border-top-color: rgba(0,40,132, 0.6);
+	border-top-color: rgba(0, 40, 132, 0.6);
 	border-bottom: 0;
 	border-left: 0;
 	margin-left: -12px;
 	margin-bottom: -24px;
 }
 
-.Bubble:hover:after {
+.Bubble:hover, .Pinned .Bubble {
+	border: 1px solid #002884;
+	background-color: rgb(0, 41, 151);
+	z-index:9999;
+}
+
+.Bubble:hover .PinIcon, .Pinned .Bubble .PinIcon {
+	visibility: visible;
+}
+
+.Bubble:hover:after, .Pinned .Bubble:after {
 	border-top-color: rgba(0, 40, 132, 1);
 }
 
-.BubbleContainer {
-	width: 200px;
-	position: absolute;
-	overflowWrap: normal;
-	cursor: grab;
-}
-
-.BubbleContainer:hover {
+.BubbleContainer:hover, .Pinned {
 	z-index:9999;
 }

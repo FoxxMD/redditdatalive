@@ -15,14 +15,15 @@ class Floatable {
 	this.node       = node;
 	this.onComplete = onComplete;
 	this.active     = true;
+	this.pinned     = false;
 	this.draggable  = false;
 	this.prevMouseX = null;
 	this.prevMouseY = null;
   }
   
   update = ( deltaTime ) => {
-    
-    if(!this.active) {
+  
+	if(!this.isActive()) {
       return;
 	}
 	
@@ -95,6 +96,18 @@ class Floatable {
 	const translateString                  = `translate(${this.x}px, ${this.y}px)`;
 	this.node.style[ "-webkit-transform" ] = translateString;
 	this.node.style.transform              = translateString;
+  };
+  
+  isActive = () =>{
+	return this.active && !this.pinned;
+  };
+  
+  pin = () =>{
+	this.pinned = true;
+  };
+  
+  unpin = () =>{
+	this.pinned = false;
   };
 }
 

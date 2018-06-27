@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import { Button } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import { withStyles } from '@material-ui/core/styles';
 import { Transition, TransitionGroup } from 'react-transition-group';
 import ReactAnimationFrame from 'react-animation-frame';
 
@@ -17,12 +19,15 @@ import { selectSubmissions } from './ListenSelectors';
 import * as listenActions from './ListenAction';
 import Floatable from './Floatable';
 import { BrowserDetect } from '../../Utils/BrowserDetect';
+import { findAncestor } from '../../Utils/DOMUtil';
 
 // thanks https://leaverou.github.io/bubbly/
 import './Bubble.css';
 
-
 const EXPERIMENT_KEY = 'listen';
+
+
+BrowserDetect.init();
 
 const submissionContainerStyle = {
   position: 'absolute',
@@ -33,7 +38,24 @@ const submissionContainerStyle = {
   overflow: 'visible',
 };
 
-BrowserDetect.init();
+const iconButtonStyles = theme => ({
+  root: {
+	position: 'absolute',
+	right: 0,
+	top: 0,
+	width: '38px',
+	height: '38px'
+  }
+});
+const StyledIconButton = withStyles( iconButtonStyles )( IconButton );
+
+const favoriteIconButtonStyles = theme => ({
+  root: {
+	fontSize: '18px'
+  }
+});
+const StyledFavoriteIcon       = withStyles( favoriteIconButtonStyles )( FavoriteIcon );
+
 
 // super lots of help from https://github.com/aholachek/react-animation-comparison/blob/master/src/react-transition-group-anime-example.js
 // for how to use transitions properly
@@ -64,6 +86,13 @@ let delta       = null;
 let last_update = 0;
 
 class Listen extends Component {
+  
+  constructor( props ){
+	super( props );
+	this.state = {
+	  pinned: []
+	};
+  }
   
   onAnimationFrame = ( time ) =>{
 	delta       = time - last_update;
@@ -110,6 +139,23 @@ class Listen extends Component {
 	foundNode.disableDragging();
   };
   
+  toggleItemPin = ( e, id ) =>{
+	const containerElement = findAncestor( e.currentTarget, 'BubbleContainer' );
+	const foundNode        = floaters.find( x => x.node === containerElement );
+	if(foundNode.pinned) {
+	  foundNode.unpin();
+	  this.setState( {
+		pinned: this.state.pinned.filter( x => x !== id )
+	  } );
+	}
+	else {
+	  foundNode.pin();
+	  this.setState( {
+		pinned: this.state.pinned.concat( [ id ] )
+	  } );
+	}
+  };
+  
   onEventMove = ( e ) =>{
 	const foundNode = floaters.find( x => x.node === e.currentTarget );
 	if(foundNode.draggable) {
@@ -142,7 +188,7 @@ class Listen extends Component {
 						  onExit={animateExit}
 						  onEntered={() => this.props.removeItem( item.id )}
 						  key={item.id}>
-				<div className="BubbleContainer"
+				<div className={`BubbleContainer ${this.state.pinned.includes( item.id ) ? 'Pinned' : ''}`}
 					 onMouseEnter={this.onMouseEnter}
 					 onTouchStart={this.onTouchStart}
 					 onTouchEnd={this.onTouchEnd}
@@ -152,6 +198,9 @@ class Listen extends Component {
 					 onMouseUp={this.onMouseUp}
 					 onMouseMove={this.onEventMove}>
 				  <div className="Bubble">
+					<StyledIconButton className="PinIcon" onClick={( e ) => this.toggleItemPin( e, item.id )} color="inherit">
+					  <StyledFavoriteIcon/>
+					</StyledIconButton>
 					<h3 alt={item.title.length}><a className="titleLink" target="_blank"
 												   href={`https://reddit.com${item.permalink}`}>{displayTitle}</a></h3>
 					<p>
