@@ -73,7 +73,23 @@ class Listen extends Component {
 	}
   };
   
-  stopAnimation = ( e ) =>{
+  // touch events
+  
+  onTouchStart = ( e ) =>{
+	const foundNode = floaters.find( x => x.node === e.currentTarget );
+	foundNode.stopAnimation();
+	foundNode.enableDragging( e.targetTouches[ 0 ].pageX, e.targetTouches[ 0 ].pageY );
+  };
+  
+  onTouchEnd = ( e ) =>{
+	const foundNode = floaters.find( x => x.node === e.currentTarget );
+	foundNode.disableDragging();
+	foundNode.startAnimation();
+  };
+  
+  // mouse events
+  
+  onMouseEnter = ( e ) =>{
 	const foundNode = floaters.find( x => x.node === e.currentTarget );
 	foundNode.stopAnimation();
   };
@@ -84,20 +100,25 @@ class Listen extends Component {
 	foundNode.startAnimation();
   };
   
-  enableDragging = ( e ) =>{
+  onMouseDown = ( e ) =>{
 	const foundNode = floaters.find( x => x.node === e.currentTarget );
 	foundNode.enableDragging( e.pageX, e.pageY );
   };
   
-  disableDragging = ( e ) =>{
+  onMouseUp = ( e ) =>{
 	const foundNode = floaters.find( x => x.node === e.currentTarget );
 	foundNode.disableDragging();
   };
   
-  onMouseMove = ( e ) =>{
+  onEventMove = ( e ) =>{
 	const foundNode = floaters.find( x => x.node === e.currentTarget );
 	if(foundNode.draggable) {
-	  foundNode.moveTo( e.pageX, e.pageY );
+	  if(e.targetTouches !== undefined) {
+		foundNode.moveTo( e.targetTouches[ 0 ].pageX, e.targetTouches[ 0 ].pageY );
+	  }
+	  else {
+		foundNode.moveTo( e.pageX, e.pageY );
+	  }
 	}
   };
   
@@ -122,11 +143,14 @@ class Listen extends Component {
 						  onEntered={() => this.props.removeItem( item.id )}
 						  key={item.id}>
 				<div className="BubbleContainer"
-					 onMouseEnter={this.stopAnimation}
+					 onMouseEnter={this.onMouseEnter}
+					 onTouchStart={this.onTouchStart}
+					 onTouchEnd={this.onTouchEnd}
+					 onTouchMove={this.onEventMove}
 					 onMouseLeave={this.onMouseLeave}
-					 onMouseDown={this.enableDragging}
-					 onMouseUp={this.disableDragging}
-					 onMouseMove={this.onMouseMove}>
+					 onMouseDown={this.onMouseDown}
+					 onMouseUp={this.onMouseUp}
+					 onMouseMove={this.onEventMove}>
 				  <div className="Bubble">
 					<h3 alt={item.title.length}><a className="titleLink" target="_blank"
 												   href={`https://reddit.com${item.permalink}`}>{displayTitle}</a></h3>
