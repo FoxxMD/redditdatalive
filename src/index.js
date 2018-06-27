@@ -29,7 +29,7 @@ const middlewares = [
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore( createReducer(), composeEnhancers( applyMiddleware( ...middlewares ) ) );
+const store = createStore( createReducer(), {}, composeEnhancers( applyMiddleware( ...middlewares ) ) );
 
 store.runSaga          = sagaMiddleware.run;
 store.injectedReducers = {}; // Reducer registry
