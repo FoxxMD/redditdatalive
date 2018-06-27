@@ -104,7 +104,8 @@ class Listen extends Component {
 					 onMouseEnter={this.onMouseEnter}
 					 onMouseLeave={this.onMouseLeave}>
 				  <div className="Bubble">
-					<h3 alt={item.title.length}><a className="titleLink" target="_blank" href={item.url}>{displayTitle}</a></h3>
+					<h3 alt={item.title.length}><a className="titleLink" target="_blank"
+												   href={`https://reddit.com${item.permalink}`}>{displayTitle}</a></h3>
 					<p>
 					  By <a href={`https://reddit.com/u/${item.author}`} target="_blank">/u/{item.author}</a> on
 					  <a href={`https://reddit.com/r/${item.subreddit}`} target="_blank">/r/{item.subreddit}</a>
