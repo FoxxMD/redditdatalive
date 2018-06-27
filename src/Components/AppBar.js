@@ -1,7 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, IconButton, Badge, CircularProgress, Popover } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Badge,
+  CircularProgress,
+  Popover,
+  Menu,
+  MenuItem,
+  List,
+  ListItem
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Favorite from '@material-ui/icons/Favorite';
@@ -9,7 +21,7 @@ import WorldIcon from '@material-ui/icons/Language';
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { push } from 'react-router-redux';
 import get from 'lodash/get';
 import { withSize } from 'react-sizeme';
 
@@ -95,6 +107,7 @@ class ButtonAppBar extends Component {
 	super( props );
 	this.state = {
 	  prefDrawerOpen: false,
+	  navMenuEl: null,
 	  creditAnchorElement: null
 	};
   }
@@ -104,6 +117,25 @@ class ButtonAppBar extends Component {
 	  this.props.announceAppBarHeight( this.props.size.height );
 	}
   }
+  
+  handleOpenNavMenu = ( e ) =>{
+	this.setState( {
+	  navMenuEl: e.currentTarget
+	} );
+  };
+  
+  handleNavMenuClose = () =>{
+	this.setState( {
+	  navMenuEl: null
+	} );
+  };
+  
+  handleNavMenuItemClick = ( path ) =>{
+	this.setState( {
+	  navMenuEl: null
+	} );
+	this.props.goToLink( path );
+  };
   
   openPrefDrawer = () =>{
 	this.setState( {
@@ -151,25 +183,45 @@ class ButtonAppBar extends Component {
   };
   
   render(){
-	const { classes, breadcrumbs, sse } = this.props;
-	const { creditAnchorElement }       = this.state;
+	const { classes, breadcrumbs, sse }      = this.props;
+	const { creditAnchorElement, navMenuEl } = this.state;
 	return (
 		<div className={classes.root}>
 		  <AppBar position="static">
 			<Toolbar>
-			  <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-				<MenuIcon/>
-			  </IconButton>
-			  <Typography variant="title" color="inherit" className={classes.flex}>
-				{breadcrumbs.map( ( breadcrumb, index ) => (
-					<span key={breadcrumb.key}>
-					<NavLink className={classes.linkStyle} to={breadcrumb.props.match.url}>
-					  {breadcrumb}
-					</NavLink>
-					  {(index < breadcrumbs.length - 1) && <i> / </i>}
+			  <List component="nav">
+				<ListItem
+					button
+					aria-haspopup="true"
+					aria-controls="lock-menu"
+					onClick={this.handleOpenNavMenu}>
+				  <MenuIcon style={{ marginRight: '5px' }}/>
+				  <Typography variant="title" color="inherit" className={classes.flex}>
+					{breadcrumbs.map( ( breadcrumb, index ) => (
+						<span key={breadcrumb.key}>
+						  {breadcrumb}
+						  {(index < breadcrumbs.length - 1) && <i> / </i>}
 				  </span>
+					) )}
+				  </Typography>
+				</ListItem>
+			  </List>
+			  <Menu
+				  id="lock-menu"
+				  anchorEl={navMenuEl}
+				  open={Boolean( navMenuEl )}
+				  onClose={this.handleNavMenuClose}
+			  >
+				{routes.map( ( route, index ) => (
+					<MenuItem
+						key={index}
+						onClick={() => this.handleNavMenuItemClick( route.path )}
+					>
+					  {route.breadcrumb}
+					</MenuItem>
 				) )}
-			  </Typography>
+			  </Menu>
+			  <span style={{ flex: 1 }}></span>
 			  <IconButton color="inherit" onClick={this.toggleSse}>
 				<StatusBadge badgeContent=""
 							 color={sse.error !== null ? 'error' : get( statusType, [ sse.status ], 'secondary' )}>
@@ -223,7 +275,8 @@ const mapDispatchToProps = ( dispatch ) => ({
   setPreferences: ( prefs ) => (dispatch( prefActions.setPreferences( prefs ) )),
   announceAppBarHeight: ( height ) => (dispatch( prefActions.annouceAppBarHeight( height ) )),
   startFeed: () => (dispatch( sseActions.startFeed() )),
-  stopFeed: () => (dispatch( sseActions.stopFeed() ))
+  stopFeed: () => (dispatch( sseActions.stopFeed() )),
+  goToLink: ( path ) => dispatch( push( path ) )
 });
 
 const mapStateToProps = ( state ) =>{
