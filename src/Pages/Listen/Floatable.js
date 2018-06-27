@@ -2,7 +2,7 @@
 
 class Floatable {
   
-  constructor( node, onComplete ){
+  constructor( node, onComplete, browser ){
 	this.velocity = {
 	  x: 0,
 	  y: -1
@@ -11,9 +11,13 @@ class Floatable {
 	this.x = Math.random() * (window.innerWidth - node.offsetWidth);
 	this.y = window.innerHeight;
 	
+	this.browser    = browser;
 	this.node       = node;
 	this.onComplete = onComplete;
 	this.active     = true;
+	this.draggable  = false;
+	this.prevMouseX = null;
+	this.prevMouseY = null;
   }
   
   update = ( deltaTime ) => {
@@ -54,6 +58,37 @@ class Floatable {
   };
   startAnimation = () =>{
 	this.active = true;
+  };
+  
+  enableDragging = ( x, y ) =>{
+	this.draggable  = true;
+	this.prevMouseX = x;
+	this.prevMouseY = y;
+	if([ 'Chrome', 'Safari' ].includes( this.browser )) {
+	  this.node.style.cursor = '-webkit-grabbing';
+	}
+	else if(this.browser === 'Mozilla') {
+	  this.node.style.cursor = '-moz-grabbing';
+	}
+	else {
+	  this.node.style.cursor = 'grabbing';
+	}
+  };
+  
+  disableDragging = () =>{
+	this.draggable         = false;
+	this.prevMouseX        = null;
+	this.prevMouseY        = null;
+	this.node.style.cursor = null;
+  };
+  
+  moveTo = ( x, y ) =>{
+	this.x += (x - this.prevMouseX);
+	this.y += (y - this.prevMouseY);
+	this.updateDiv();
+	
+	this.prevMouseX = x;
+	this.prevMouseY = y;
   };
   
   updateDiv = () =>{

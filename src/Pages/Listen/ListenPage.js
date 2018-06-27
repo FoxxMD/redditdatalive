@@ -16,6 +16,7 @@ import { createSubmissionEvent } from '../../Global/SSE/sseActions';
 import { selectSubmissions } from './ListenSelectors';
 import * as listenActions from './ListenAction';
 import Floatable from './Floatable';
+import { BrowserDetect } from '../../Utils/BrowserDetect';
 
 // thanks https://leaverou.github.io/bubbly/
 import './Bubble.css';
@@ -31,6 +32,8 @@ const submissionContainerStyle = {
   right: 0,
   overflow: 'visible',
 };
+
+BrowserDetect.init();
 
 // super lots of help from https://github.com/aholachek/react-animation-comparison/blob/master/src/react-transition-group-anime-example.js
 // for how to use transitions properly
@@ -51,7 +54,7 @@ const floatCleanup = ( floater ) =>{
 let floaters = [];
 
 const animateIn = node =>{
-  const floater = new Floatable( node, floatCleanup );
+  const floater = new Floatable( node, floatCleanup, BrowserDetect.browser );
   floaters.push( floater );
 };
 
@@ -70,14 +73,32 @@ class Listen extends Component {
 	}
   };
   
-  onMouseEnter = ( e ) =>{
+  stopAnimation = ( e ) =>{
 	const foundNode = floaters.find( x => x.node === e.currentTarget );
 	foundNode.stopAnimation();
   };
   
   onMouseLeave = ( e ) =>{
 	const foundNode = floaters.find( x => x.node === e.currentTarget );
+	foundNode.disableDragging();
 	foundNode.startAnimation();
+  };
+  
+  enableDragging = ( e ) =>{
+	const foundNode = floaters.find( x => x.node === e.currentTarget );
+	foundNode.enableDragging( e.pageX, e.pageY );
+  };
+  
+  disableDragging = ( e ) =>{
+	const foundNode = floaters.find( x => x.node === e.currentTarget );
+	foundNode.disableDragging();
+  };
+  
+  onMouseMove = ( e ) =>{
+	const foundNode = floaters.find( x => x.node === e.currentTarget );
+	if(foundNode.draggable) {
+	  foundNode.moveTo( e.pageX, e.pageY );
+	}
   };
   
   render(){
@@ -101,8 +122,11 @@ class Listen extends Component {
 						  onEntered={() => this.props.removeItem( item.id )}
 						  key={item.id}>
 				<div className="BubbleContainer"
-					 onMouseEnter={this.onMouseEnter}
-					 onMouseLeave={this.onMouseLeave}>
+					 onMouseEnter={this.stopAnimation}
+					 onMouseLeave={this.onMouseLeave}
+					 onMouseDown={this.enableDragging}
+					 onMouseUp={this.disableDragging}
+					 onMouseMove={this.onMouseMove}>
 				  <div className="Bubble">
 					<h3 alt={item.title.length}><a className="titleLink" target="_blank"
 												   href={`https://reddit.com${item.permalink}`}>{displayTitle}</a></h3>
