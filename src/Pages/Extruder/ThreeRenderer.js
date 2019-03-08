@@ -2,12 +2,7 @@
 import * as THREE from 'three';
 import TWEEN from '@tweenjs/tween.js';
 
-const extrusion      = { // how far each particle should be extruded based on its HSV color
-		h: 1.25,
-		s: 0,
-		v: 0
-	  },
-	  mouseExtrusion = 1; // extrusion multiplier on mouse over
+const mouseExtrusion = 1; // extrusion multiplier on mouse over
 
 const half_PI = Math.PI / 2;
 
@@ -91,7 +86,16 @@ const shaders = {
 };
 
 class ThreeRender {
-  constructor( containerElement, onReady = () => null ){
+  constructor( {
+				 containerElement,
+				 url,
+				 initialExtrusion = { // how far each particle should be extruded based on its HSV color
+				   h: 1.25,
+				   s: 0,
+				   v: 0
+				 },
+				 onReady = () => null
+			   } ){
 	this.containerElement    = containerElement;
 	this.width               = this.containerElement.offsetWidth;
 	this.height              = this.containerElement.offsetHeight;
@@ -101,8 +105,10 @@ class ThreeRender {
 	this.mesh                = undefined;
 	this.mouseDetectionPlane = undefined;
 	this.currentExtrusion    = { h: 0, s: 0, v: 0 };
-	//this.url                 = 'https://i.imgur.com/3aDc8Iy.jpg';
-	this.url                 = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/223954/StarryNight.jpg';
+	this.targetExtrusion     = initialExtrusion;
+	
+	this.url = url;
+	//this.url = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/223954/StarryNight.jpg';
 	
 	this.readyCallback = onReady;
 	
@@ -120,6 +126,7 @@ class ThreeRender {
 	this.renderer.setSize( this.width, this.height );
 	const canvas = this.renderer.domElement;
 	this.containerElement.appendChild( canvas );
+	this.exTween                 = null;
 	THREE.ImageUtils.crossOrigin = 'Anonymous';
 	
 	window.onresize = this.resizeCanvas;
@@ -142,14 +149,19 @@ class ThreeRender {
   }
   
   resizeCanvas = () => {
-	this.width               = this.containerElement.offsetWidth;
-	this.height              = this.containerElement.offsetHeight;
- 
+	this.width  = this.containerElement.offsetWidth;
+	this.height = this.containerElement.offsetHeight;
+	
 	// https://github.com/mrdoob/three.js/issues/69#issuecomment-636783
 	this.camera.aspect = this.width / this.height;
 	this.camera.updateProjectionMatrix();
 	
 	this.renderer.setSize( this.width, this.height );
+  };
+  
+  setImage = ( url ) => {
+	this.url = url;
+	this.loadTexture();
   };
   
   loadTexture = () => this.loader.load( this.url, texture => {
@@ -172,7 +184,7 @@ class ThreeRender {
 	  fragmentShader: shaders.fragment
 	} );
 	
-	this.camera.position.z = Math.max( imageWidth, imageHeight ) * 0.2;
+	this.camera.position.z = Math.max( imageWidth, imageHeight ) * 0.3;
 	
 	for(let x = 0; x + pointDist < imageWidth; x += pointDist) {
 	  for(let y = 0; y + pointDist < imageHeight; y += pointDist) {
@@ -204,12 +216,26 @@ class ThreeRender {
 		.easing( TWEEN.Easing.Quadratic.Out )
 		.start();
 	
-	new TWEEN.Tween( this.currentExtrusion )
-		.to( extrusion, 5000 )
-		.easing( TWEEN.Easing.Quadratic.Out )
-		.start();
+	this.setExtrusionTween( this.targetExtrusion );
+	// this.exTween = new TWEEN.Tween( this.currentExtrusion )
+	// 	.to( this.targetExtrusion, 5000 )
+	// 	.easing( TWEEN.Easing.Quadratic.Out )
+	// 	.start();
+	
 	this.readyCallback();
   } );
+  
+  setExtrusionTween = ( newExtrusion ) => {
+	if(this.exTween !== null) {
+	  this.exTween.stop();
+	}
+	this.targetExtrusion = { ...this.targetExtrusion, ...newExtrusion };
+	
+	this.exTween = new TWEEN.Tween( this.currentExtrusion )
+		.to( this.targetExtrusion, 5000 )
+		.easing( TWEEN.Easing.Quadratic.Out )
+		.start();
+  };
   
   render = ( time ) => {
 	let now          = new Date().getTime();

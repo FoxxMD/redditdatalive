@@ -6,6 +6,7 @@
   "dependencies": {
     "@material-ui/core": "^1.2.2",
     "@material-ui/icons": "^1.1.0",
+    "@material-ui/lab": "^3.0.0-alpha.30",
     "@tweenjs/tween.js": "^17.3.0",
     "autoprefixer": "7.1.6",
     "babel-core": "6.26.0",
