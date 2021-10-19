@@ -13,6 +13,9 @@ function reducer( state = initialState, action ){
 	  const addedSubmissions = [ ...state.rawSubmissions ];
 	  addedSubmissions.push( action.payload );
 	  return { ...state, rawSubmissions: addedSubmissions };
+		// addedSubmissions.unshift( action.payload );
+		// // only keep last 100
+		// return {...state, rawSubmissions: addedSubmissions.slice(0, 100)};
 	case listenConstants.LIST_ITEM_REMOVE:
 	  const index              = state.activeSubmissions.findIndex( x => x.id === action.payload );
 	  const removedSubmissions = [ ...state.activeSubmissions ];

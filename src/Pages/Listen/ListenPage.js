@@ -204,8 +204,8 @@ class Listen extends Component {
 					<h3 alt={item.title.length}><a className="titleLink" target="_blank"
 												   href={`https://reddit.com${item.permalink}`}>{displayTitle}</a></h3>
 					<p>
-					  By <a href={`https://reddit.com/u/${item.author}`} target="_blank">/u/{item.author}</a> on
-					  <a href={`https://reddit.com/r/${item.subreddit}`} target="_blank">/r/{item.subreddit}</a>
+					  By <a href={`https://reddit.com/u/${item.author.name}`} target="_blank">/u/{item.author.name}</a> on
+					  <a style={{marginLeft: '5px'}} href={`https://reddit.com/r/${item.subreddit.display_name}`} target="_blank">/r/{item.subreddit.display_name}</a>
 					</p>
 				  </div>
 				</div>
